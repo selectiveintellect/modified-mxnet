@@ -103,7 +103,7 @@ __device__ MSHADOW_FORCE_INLINE static Acctype cu_area_pixel_compute_source_inde
 // caffe_gpu_interp2_kernel overloading with Tensor<xpu, 4, DType> for NHWC layout
 template<typename xpu, typename Dtype, typename Acctype>
 __global__ void
-__launch_bounds__(cuda::kMaxThreadsPerBlock, 1)
+__launch_bounds__(mshadow::cuda::kMaxThreadsPerBlock, 1)
 caffe_gpu_interp2_kernel(const int n,
     const Acctype rheight, const Acctype rwidth,
   const bool align_corners,
@@ -162,7 +162,7 @@ caffe_gpu_interp2_kernel(const int n,
 // caffe_gpu_interp2_kernel overloading with Tensor<xpu, 3, DType> for HWC layout
 template<typename xpu, typename Dtype, typename Acctype>
 __global__ void 
-__launch_bounds__(cuda::kMaxThreadsPerBlock, 1)
+__launch_bounds__(mshadow::cuda::kMaxThreadsPerBlock, 1)
 caffe_gpu_interp2_kernel(const int n,
   const Acctype rheight, const Acctype rwidth,
   const bool align_corners,

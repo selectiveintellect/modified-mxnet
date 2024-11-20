@@ -198,11 +198,11 @@ class CudaGraphsSubSegExec {
     // Current executor should be Runnable with the same parameters
     CHECK(IsRunnable());
     MakeGraph(exec_list, rctx, is_gpu, verbose, from_op_idx_, num_ops_);
-
-    cudaGraphExecUpdateResult update_result = cudaGraphExecUpdateError;
-    cudaGraphNode_t error_node;
-    cudaError_t err =
-        cudaGraphExecUpdate(graph_exec_.get(), graph_.get(), &error_node, &update_result);
+    cudaGraphExecUpdateResultInfo resultInfo;
+    cudaError_t err = cudaGraphExecUpdate(graph_exec_.get(), graph_.get(), &resultInfo);
+    //deprecated for cuda 12.2
+    //cudaGraphNode_t error_node = resultInfo.errorNode;
+    cudaGraphExecUpdateResult update_result = resultInfo.result;
     switch (err) {
       case cudaErrorGraphExecUpdateFailure:
         MakeGraphExec(exec_list, rctx);

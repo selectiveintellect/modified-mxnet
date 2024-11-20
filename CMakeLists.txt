@@ -57,6 +57,7 @@ include(CMakeDependentOption)
 #Some things have order. This must be put in front alone
 option(MXNET_BUILD_SHARED_LIBS "Build shared libraries instead of static libraries" ON)
 option(USE_CUDA "Build with CUDA support"   ON)
+cmake_policy(SET CMP0104 NEW)
 set(MXNET_CUDA_ARCH "Auto" CACHE STRING "Target NVIDIA GPU achitecture.
 Format: Auto | Common | All | LIST(ARCH_AND_PTX ...)
 - \"Auto\" detects local machine GPU compute arch at runtime.

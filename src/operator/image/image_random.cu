@@ -41,7 +41,7 @@ using namespace mshadow;
  * that such configuration can always be launched.
  */
 template <typename xpu, typename Dtype>
-__global__ void __launch_bounds__(cuda::kMaxThreadsPerBlock, 1)
+__global__ void __launch_bounds__(mshadow::cuda::kMaxThreadsPerBlock, 1)
     ToTensorCudaKernel(const Tensor<xpu, 3, Dtype> input,
                        const Tensor<xpu, 3, float> output,
                        const int req,
@@ -64,7 +64,7 @@ __global__ void __launch_bounds__(cuda::kMaxThreadsPerBlock, 1)
 
 // ToTensor Kernel for 4D input
 template <typename xpu, typename Dtype>
-__global__ void __launch_bounds__(cuda::kMaxThreadsPerBlock, 1)
+__global__ void __launch_bounds__(mshadow::cuda::kMaxThreadsPerBlock, 1)
     ToTensorCudaKernel(const Tensor<xpu, 4, Dtype> input,
                        const Tensor<xpu, 4, float> output,
                        const int req,
@@ -116,7 +116,7 @@ void ToTensorImplCUDA(mshadow::Stream<gpu>* s,
 
 // Normalize Forward CUDA Kernel
 template <typename xpu, typename DType>
-__global__ void __launch_bounds__(cuda::kMaxThreadsPerBlock, 1)
+__global__ void __launch_bounds__(mshadow::cuda::kMaxThreadsPerBlock, 1)
     NormalizeCudaKernel(const DType* input,
                         DType* output,
                         const int req,
@@ -176,14 +176,14 @@ void NormalizeImplCUDA(mshadow::Stream<gpu>* s,
   cudaStream_t stream = mshadow::Stream<gpu>::GetStream(s);
   NormalizeCudaKernel<gpu, DType>
       // 1 image per block. N is batch size.
-      <<<N, dim3(cuda::kMaxThreadsPerBlock, 1), 0, stream>>>(
+      <<<N, dim3(mshadow::cuda::kMaxThreadsPerBlock, 1), 0, stream>>>(
           input, output, req, N, C, H, W, mean_d0, mean_d1, mean_d2, std_d0, std_d1, std_d2);
   MSHADOW_CUDA_POST_KERNEL_CHECK(NormalizeCudaKernel);
 }
 
 // Normalize Backward Kernel
 template <typename xpu, typename DType>
-__global__ void __launch_bounds__(cuda::kMaxThreadsPerBlock, 1)
+__global__ void __launch_bounds__(mshadow::cuda::kMaxThreadsPerBlock, 1)
     NormalizeBackwardCudaKernel(const DType* out_grad,
                                 DType* in_grad,
                                 const int req,
@@ -234,7 +234,7 @@ void NormalizeBackwardImplCUDA(mshadow::Stream<gpu>* s,
   cudaStream_t stream = mshadow::Stream<gpu>::GetStream(s);
   NormalizeBackwardCudaKernel<gpu, DType>
       // 1 image per block. N is batch size.
-      <<<N, dim3(cuda::kMaxThreadsPerBlock, 1), 0, stream>>>(
+      <<<N, dim3(mshadow::cuda::kMaxThreadsPerBlock, 1), 0, stream>>>(
           out_grad, in_grad, req, N, C, H, W, std_d0, std_d1, std_d2);
   MSHADOW_CUDA_POST_KERNEL_CHECK(NormalizeBackwardCudaKernel);
 }
