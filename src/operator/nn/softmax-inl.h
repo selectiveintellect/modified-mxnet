@@ -422,7 +422,7 @@ __global__ void masked_softmax_kernel(DType* in,
         smem[x] = ::max(smem[x], negate ? -in[base + i * sa] : in[base + i * sa]);
     }
     __syncthreads();
-    cuda::Reduce1D<red::maximum, x_bits>(smem);
+    mshadow::cuda::Reduce1D<red::maximum, x_bits>(smem);
     __syncthreads();
     smax = smem[0];
     __syncthreads();
@@ -438,7 +438,7 @@ __global__ void masked_softmax_kernel(DType* in,
     }
   }
   __syncthreads();
-  cuda::Reduce1D<red::sum, x_bits>(smem);
+  mshadow::cuda::Reduce1D<red::sum, x_bits>(smem);
   __syncthreads();
   AType ssum = smem[0];
   __syncthreads();
@@ -844,7 +844,7 @@ __global__ void masked_softmax_grad_kernel(OType* out,
       smem[x] += OP1::Map(ograd[base + i * sa], out[base + i * sa]);
   }
   __syncthreads();
-  cuda::Reduce1D<red::sum, x_bits>(smem);
+  mshadow::cuda::Reduce1D<red::sum, x_bits>(smem);
   __syncthreads();
   AType ssum = smem[0];
   __syncthreads();

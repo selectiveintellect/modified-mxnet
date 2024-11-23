@@ -23,7 +23,7 @@
 #if MXNET_USE_CUDA && MXNET_USE_NVTX
 #include <cuda.h>
 #include <cuda_runtime.h>
-#include <nvToolsExtCuda.h>
+#include <nvtx3/nvToolsExtCuda.h>
 #include <vector>
 #include <string>
 #include <cstring>
