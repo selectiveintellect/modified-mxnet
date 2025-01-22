@@ -17,8 +17,24 @@
 
 die "you need to define MXNET_DIR environment variable to point to a compiled version of MXNet" unless $ENV{MXNET_DIR};
 use ExtUtils::MakeMaker;
-`swig -noproxy -c++ -perl nnvm.i`;
-unlink "NNVMCAPI.pm";
+use Alien::SWIG4;
+use Env qw(@PATH);
+use File::Which qw(which);
+if (Alien::SWIG4->install_type ne 'system' and defined Alien::SWIG4->bin_dir) {
+    unshift @PATH, Alien::SWIG4->bin_dir;
+}
+die "SWIG 4.0 or greater version needs to be used" if (Alien::SWIG4->version !~ /^4.\d+/);
+my $swig_exe = which('swig');
+print "Found swig executable at $swig_exe\n";
+my @swig_args = ($swig_exe, '-Wall', '-noproxy', '-c++', '-perl5', '-I.', 'nnvm.i');
+my $cxx_file = 'nnvm_wrap.cxx';
+my $ret = system(@swig_args);
+if ($ret == 0 and -e $cxx_file) {
+    print "Successfully generated $cxx_file\n";
+    unlink "NNVMCAPI.pm" or warn "Cannot delete NNVMCAPI.pm file";
+} else {
+    die "Failed to successfully generate $cxx_file from $swig_exe";
+}
 my @tmp = split(/ /, $ExtUtils::MakeMaker::Config{lddlflags});
 my @lddlflags;
 while(my $flag = shift(@tmp))
@@ -40,6 +56,8 @@ while(my $flag = shift(@tmp))
       push @lddlflags, $flag;
    }
 }
+push @lddlflags, "-L$ENV{MXNET_DIR}/lib" if defined $ENV{MXNET_DIR} and -d "$ENV{MXNET_DIR}/lib";
+print "LDDLFLAGS: " . join(' ', @lddlflags) . "\n";
 
 WriteMakefile(
     NAME            => 'AI::NNVMCAPI',
@@ -55,6 +73,9 @@ WriteMakefile(
         # prereqs
         # build/test prereqs
         'Test::More'   => 0,
+        'Env' => 0,
+        'Alien::SWIG4' => 0,
+        'File::Which' => 0,
     },
     PL_FILES        => {},
 );

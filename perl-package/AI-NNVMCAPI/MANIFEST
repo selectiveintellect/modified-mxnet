@@ -4,8 +4,6 @@ MANIFEST
 MANIFEST.SKIP
 META.json
 META.yml
-MYMETA.json
-MYMETA.yml
 nnvm.i
 nnvm_typemaps.i
 README

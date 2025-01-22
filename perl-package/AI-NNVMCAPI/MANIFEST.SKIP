@@ -6,3 +6,6 @@ Makefile
 \.cxx
 \.o
 \.bs
+\.old
+\.bso
+^MYMETA\.
