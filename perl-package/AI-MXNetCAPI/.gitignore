@@ -1,0 +1,7 @@
+MYMETA.*
+pm_to_blib
+blib
+Makefile
+*.bs
+mxnet_wrap.cxx
+*.bak

@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+die "you need to define MXNET_DIR environment variable to point to a compiled version of MXNet" unless $ENV{MXNET_DIR};
 use ExtUtils::MakeMaker;
 use DynaLoader;
 `swig -noproxy -c++ -perl mxnet.i`;
@@ -46,8 +46,8 @@ WriteMakefile(
     AUTHOR          => 'Sergey Kolychev <sergeykolychev.github@gmail.com>',
     VERSION_FROM    => 'lib/AI/MXNetCAPI.pm',
     ABSTRACT_FROM   => 'lib/AI/MXNetCAPI.pm',
-    LIBS           => ['-L../../lib -lmxnet'],
-    INC            => '-I../../include/mxnet',
+    LIBS           => ["-L$ENV{MXNET_DIR}/lib -lmxnet"],
+    INC            => "-I$ENV{MXNET_DIR}/include/mxnet",
     OBJECT         => 'mxnet_wrap.o',
     LDDLFLAGS      => join(' ', @lddlflags),
     PREREQ_PM      => {

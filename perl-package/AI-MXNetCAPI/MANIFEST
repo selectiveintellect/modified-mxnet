@@ -1,10 +1,13 @@
 Changes
-Makefile.PL
+lib/AI/MXNetCAPI.pm
 MANIFEST
-README
+MANIFEST.SKIP
 META.json
 META.yml
-t/AI-MXNetCAPI.t
-lib/AI/MXNetCAPI.pm
 mxnet.i
 mxnet_typemaps.i
+mxnet_wrap.cxx
+MYMETA.json
+MYMETA.yml
+README
+t/AI-MXNetCAPI.t
