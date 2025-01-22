@@ -1,10 +1,12 @@
 Changes
-Makefile.PL
+lib/AI/NNVMCAPI.pm
 MANIFEST
+MANIFEST.SKIP
 META.json
 META.yml
-README
-t/AI-NNVMCAPI.t
-lib/AI/NNVMCAPI.pm
+MYMETA.json
+MYMETA.yml
 nnvm.i
 nnvm_typemaps.i
+README
+t/AI-NNVMCAPI.t

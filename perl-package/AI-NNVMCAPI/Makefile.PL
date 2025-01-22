@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+die "you need to define MXNET_DIR environment variable to point to a compiled version of MXNet" unless $ENV{MXNET_DIR};
 use ExtUtils::MakeMaker;
 `swig -noproxy -c++ -perl nnvm.i`;
 unlink "NNVMCAPI.pm";
@@ -46,8 +47,8 @@ WriteMakefile(
     AUTHOR          => 'Sergey Kolychev <sergeykolychev.github@gmail.com>',
     VERSION_FROM    => 'lib/AI/NNVMCAPI.pm',
     ABSTRACT_FROM   => 'lib/AI/NNVMCAPI.pm',
-    LIBS           => ['-L../../lib -lmxnet'],
-    INC            => '-I../../3rdparty/tvm/nnvm/include/nnvm',
+    LIBS           => ["-L$ENV{MXNET_DIR} -lmxnet"],
+    INC            => "-I$ENV{MXNET_DIR}/include/nnvm",
     OBJECT         => 'nnvm_wrap.o',
     LDDLFLAGS      => join(' ', @lddlflags),
     PREREQ_PM      => {

@@ -6,7 +6,6 @@ META.json
 META.yml
 mxnet.i
 mxnet_typemaps.i
-mxnet_wrap.cxx
 MYMETA.json
 MYMETA.yml
 README
