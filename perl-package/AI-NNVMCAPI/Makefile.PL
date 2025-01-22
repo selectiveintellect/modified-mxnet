@@ -16,6 +16,7 @@
 # under the License.
 
 die "you need to define MXNET_DIR environment variable to point to a compiled version of MXNet" unless $ENV{MXNET_DIR};
+die "Did not find a compiled version of libmxnet.so" unless -e "$ENV{MXNET_DIR}/lib/libmxnet.so";
 use ExtUtils::MakeMaker;
 use Alien::SWIG4;
 use Env qw(@PATH);
@@ -65,7 +66,7 @@ WriteMakefile(
     AUTHOR          => 'Sergey Kolychev <sergeykolychev.github@gmail.com>',
     VERSION_FROM    => 'lib/AI/NNVMCAPI.pm',
     ABSTRACT_FROM   => 'lib/AI/NNVMCAPI.pm',
-    LIBS           => ["-L$ENV{MXNET_DIR} -lmxnet"],
+    LIBS           => ["-L$ENV{MXNET_DIR}/lib -lmxnet"],
     INC            => "-I$ENV{MXNET_DIR}/include/nnvm",
     OBJECT         => 'nnvm_wrap.o',
     LDDLFLAGS      => join(' ', @lddlflags),
