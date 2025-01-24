@@ -182,7 +182,9 @@ XS(py_zip) {
     SWIG_TypeClientData(SWIGTYPE_p_MXFunction, (void *)"FunctionHandle");
     SWIG_TypeClientData(SWIGTYPE_p_MXAtomicSymbolCreator, (void *)"AtomicSymbolCreator");
     SWIG_TypeClientData(SWIGTYPE_p_MXSymbol, (void *)"SymbolHandle");
+#ifdef C_API_EXECUTOR
     SWIG_TypeClientData(SWIGTYPE_p_MXExecutor, (void *)"ExecutorHandle");
+#endif
     SWIG_TypeClientData(SWIGTYPE_p_MXDataIterCreator, (void *)"DataIterCreator");
     SWIG_TypeClientData(SWIGTYPE_p_MXDataIter, (void *)"DataIterHandle");
     SWIG_TypeClientData(SWIGTYPE_p_MXKVStore, (void *)"KVStoreHandle");
@@ -381,23 +383,6 @@ int MXGetGPUMemoryInformation64(int dev, uint64_t *out, uint64_t *out);
  * \return 0 when success, -1 when failure happens
  */
 int MXNDArrayCreateNone(NDArrayHandle *out);
-/*!
- * \brief create a NDArray with specified shape
- * \param shape the pointer to the shape
- * \param ndim the dimension of the shape
- * \param dev_type device type, specify device we want to take
- * \param dev_id the device id of the specific device
- * \param delay_alloc whether to delay allocation until
- *    the ndarray is first mutated
- * \param out the returning handle
- * \return 0 when success, -1 when failure happens
- */
-int MXNDArrayCreate(const uint32_t *in,
-                              uint32_t in,
-                              int dev_type,
-                              int dev_id,
-                              int delay_alloc,
-                              NDArrayHandle *out);
 
 /*!
  * \brief create a NDArray with specified shape and data type
@@ -411,13 +396,15 @@ int MXNDArrayCreate(const uint32_t *in,
  * \param out the returning handle
  * \return 0 when success, -1 when failure happens
  */
-int MXNDArrayCreateEx(const uint32_t *in,
+int MXNDArrayCreate(const uint32_t *in,
                               uint32_t in,
                               int dev_type,
                               int dev_id,
                               int delay_alloc,
                               int dtype,
                               NDArrayHandle *out);
+
+#define MXNDArrayCreateEx MXNDArrayCreate
 /*!
  * \brief create a NDArray with specified shape and data type
  *  This api is available when MXNet is built with flag
@@ -432,13 +419,15 @@ int MXNDArrayCreateEx(const uint32_t *in,
  * \param out the returning handle
  * \return 0 when success, -1 when failure happens
  */
-int MXNDArrayCreateEx64(const int64_t *in,
+int MXNDArrayCreate64(const int64_t *in,
                                   int ndim,
                                   int dev_type,
                                   int dev_id,
                                   int delay_alloc,
                                   int dtype,
                                   NDArrayHandle *out);
+
+#define MXNDArrayCreateEx64 MXNDArrayCreate64
 /*!
  * \brief create an empty sparse NDArray with specified shape and data type
  * \param storage_type the storage type of the ndarray
@@ -725,9 +714,10 @@ int MXNDArrayReshape64(NDArrayHandle handle,
  * \param out_pdata pointer holder to get data pointer of the shape
  * \return 0 when success, -1 when failure happens
  */
-int MXNDArrayGetShapeEx(NDArrayHandle handle,
+int MXNDArrayGetShape(NDArrayHandle handle,
                                 int *out_dim,
                                 const int **out_pdata);
+#define MXNDArrayGetShapeEx MXNDArrayGetShape
 /*!
  * \brief get the shape of the array
  *  This api is available when MXNet is built with flag
@@ -737,9 +727,10 @@ int MXNDArrayGetShapeEx(NDArrayHandle handle,
  * \param out_pdata pointer holder to get data pointer of the shape
  * \return 0 when success, -1 when failure happens
  */
-int MXNDArrayGetShapeEx64(NDArrayHandle handle,
+int MXNDArrayGetShape64(NDArrayHandle handle,
                                     int *out_dim,
                                     const int64_t **out_pdata);
+#define MXNDArrayGetShapeEx64 MXNDArrayGetShape64
 /*!
  * \brief get the content of the data in NDArray
  * \param handle the handle to the ndarray
@@ -908,53 +899,20 @@ int MXFuncDescribe(FunctionHandle fun,
  * \param use_vars the normal arguments passed to function
  * \param scalar_args the scalar qarguments
  * \param mutate_vars the mutate arguments
- * \return 0 when success, -1 when failure happens
- * \sa MXFuncDescribeArgs
- */
-int MXFuncInvoke(FunctionHandle fun,
-                           NDArrayHandle *in,
-                           float *in,
-                           NDArrayHandle *in);
-/*!
- * \brief invoke a function, the array size of passed in arguments
- *   must match the values in the
- * \param fun the function
- * \param use_vars the normal arguments passed to function
- * \param scalar_args the scalar qarguments
- * \param mutate_vars the mutate arguments
  * \param num_params number of keyword parameters
  * \param param_keys keys for keyword parameters
  * \param param_vals values for keyword parameters
  * \return 0 when success, -1 when failure happens
  * \sa MXFuncDescribeArgs
  */
-int MXFuncInvokeEx(FunctionHandle fun,
+int MXFuncInvoke(FunctionHandle fun,
                              NDArrayHandle *in,
                              float *in,
                              NDArrayHandle *in,
                              int num_params,
                              char **keys,
                              char **vals);
-/*!
- * \brief invoke a nnvm op and imperative function
- * \param creator the op
- * \param num_inputs number of input NDArrays
- * \param inputs input NDArrays
- * \param num_outputs number of output NDArrays
- * \param outputs output NDArrays
- * \param num_params number of keyword parameters
- * \param param_keys keys for keyword parameters
- * \param param_vals values for keyword parameters
- * \return 0 when success, -1 when failure happens
- */
-int MXImperativeInvoke(AtomicSymbolCreator in,
-                                 int num_inputs,
-                                 NDArrayHandle *in,
-                                 int *out_size,
-                                 NDArrayHandle **out_array,
-                                 int num_params,
-                                 const char **keys,
-                                 const char **vals);
+#define MXFuncInvokeEx MXFuncInvoke
 /*!
  * \brief invoke a nnvm op and imperative function
  * \param creator the op
@@ -968,7 +926,7 @@ int MXImperativeInvoke(AtomicSymbolCreator in,
  * \param out_stypes output ndarrays' stypes
  * \return 0 when success, -1 when failure happens
  */
-int MXImperativeInvokeEx(AtomicSymbolCreator in,
+int MXImperativeInvoke(AtomicSymbolCreator in,
                                    int num_inputs,
                                    NDArrayHandle *in,
                                    int *out_size,
@@ -978,6 +936,7 @@ int MXImperativeInvokeEx(AtomicSymbolCreator in,
                                    const char **vals,
                                    const int **out_stypes);
 
+#define MXImperativeInvokeEx MXImperativeInvoke
 /*!
   * \brief set whether to record operator for autograd
  * \param is_recording 1 when recording, 0 when not recording.
@@ -1066,47 +1025,41 @@ int MXAutogradBackwardEx(uint32_t in,
  */
 int MXAutogradGetSymbol(NDArrayHandle handle, SymbolHandle *out);
 
- /*!
-  * \brief create cached operator
-  */
-int MXCreateCachedOp(SymbolHandle handle,
-                                CachedOpHandle *out);
 /*!
  * \brief create cached operator
  */
-int MXCreateCachedOpEx(SymbolHandle handle,
+int MXCreateCachedOp(SymbolHandle handle,
                                  int num_flags,
                                  const char** keys,
                                  const char** vals,
                                  CachedOpHandle *out);
+#define MXCreateCachedOpEx MXCreateCachedOp
  /*!
   * \brief free cached operator
   */
 int MXFreeCachedOp(CachedOpHandle handle);
- /*!
-  * \brief invoke cached operator
-  */
-int MXInvokeCachedOp(CachedOpHandle handle,
-                               int num_inputs,
-                               NDArrayHandle *in,
-                               int *out_size,
-                               NDArrayHandle **out_array);
 /*!
  * \brief invoke a cached op
  * \param handle the handle to the cached op
  * \param num_inputs number of input NDArrays
  * \param inputs input NDArrays
+ * \param default_dev_type the default context type
+ * \param default_dev_id the default context device id
  * \param num_outputs number of output NDArrays
  * \param outputs output NDArrays
  * \param out_stypes output ndarrays' stypes
  * \return 0 when success, -1 when failure happens
  */
-int MXInvokeCachedOpEx(CachedOpHandle handle,
+int MXInvokeCachedOp(CachedOpHandle handle,
                                  int num_inputs,
                                  NDArrayHandle *in,
+                                 int in_dev_type,
+                                 int in_dev_id,
                                  int *out_size,
                                  NDArrayHandle **out_array,
-                                 const int** out_stypes);
+                                 const int** out_stypes2);
+#define MXInvokeCachedOpEx MXInvokeCachedOp
+
 //--------------------------------------------
 // Part 3: symbolic configuration generation
 //--------------------------------------------
@@ -1412,7 +1365,7 @@ int MXSymbolGrad(SymbolHandle sym,
  * \param complete whether infer shape completes or more information is needed.
  * \return 0 when success, -1 when failure happens
  */
-int MXSymbolInferShapeEx(SymbolHandle sym,
+int MXSymbolInferShape(SymbolHandle sym,
                          uint32_t in,
                          const char** in,
                          const uint32_t *in,
@@ -1427,6 +1380,7 @@ int MXSymbolInferShapeEx(SymbolHandle sym,
                          const int **aux_shape_ndim,
                          const int ***aux_shape_data,
                          int *out);
+#define MXSymbolInferShapeEx MXSymbolInferShape
 /*!
  * \brief infer shape of unknown input shapes given the known one.
  *  The shapes are packed into a CSR matrix represented by arg_ind_ptr and arg_shape_data
@@ -1450,7 +1404,7 @@ int MXSymbolInferShapeEx(SymbolHandle sym,
  * \param complete whether infer shape completes or more information is needed.
  * \return 0 when success, -1 when failure happens
  */
-int MXSymbolInferShapeEx64(SymbolHandle sym,
+int MXSymbolInferShape64(SymbolHandle sym,
                                      uint32_t in,
                                      const char** in,
                                      const int64_t *in,
@@ -1465,6 +1419,7 @@ int MXSymbolInferShapeEx64(SymbolHandle sym,
                                      const int **aux_shape_ndim,
                                      const int64_t ***aux_shape_data,
                                      int *out);
+#define MXSymbolInferShapeEx64 MXSymbolInferShape64
 
 /*!
  * \brief partially infer shape of unknown input shapes given the known one.
@@ -1490,7 +1445,7 @@ int MXSymbolInferShapeEx64(SymbolHandle sym,
  * \param complete whether infer shape completes or more information is needed.
  * \return 0 when success, -1 when failure happens
  */
-int MXSymbolInferShapePartialEx(SymbolHandle sym,
+int MXSymbolInferShapePartial(SymbolHandle sym,
                                 uint32_t in,
                                 const char** in,
                                 const uint32_t *in,
@@ -1505,6 +1460,7 @@ int MXSymbolInferShapePartialEx(SymbolHandle sym,
                                 const int **aux_shape_ndim,
                                 const int ***aux_shape_data,
                                 int *out);
+#define MXSymbolInferShapePartialEx MXSymbolInferShapePartial
 /*!
  * \brief partially infer shape of unknown input shapes given the known one.
  *
@@ -1531,7 +1487,7 @@ int MXSymbolInferShapePartialEx(SymbolHandle sym,
  * \param complete whether infer shape completes or more information is needed.
  * \return 0 when success, -1 when failure happens
  */
-int MXSymbolInferShapePartialEx64(SymbolHandle sym,
+int MXSymbolInferShapePartial64(SymbolHandle sym,
                                             uint32_t in,
                                             const char** in,
                                             const int64_t *in,
@@ -1546,6 +1502,7 @@ int MXSymbolInferShapePartialEx64(SymbolHandle sym,
                                             const int **aux_shape_ndim,
                                             const int64_t ***aux_shape_data,
                                             int *out);
+#define MXSymbolInferShapePartialEx64 MXSymbolInferShapePartial64
 
 /*!
  * \brief infer type of unknown input types given the known one.
@@ -1658,6 +1615,7 @@ int MXOptimizeForBackend(SymbolHandle sym_handle,
 //--------------------------------------------
 // Part 4: Executor interface
 //--------------------------------------------
+#ifdef C_API_EXECUTOR
 /*!
  * \brief Delete the executor
  * \param handle the executor.
@@ -1940,6 +1898,8 @@ int MXExecutorGetOptimizedSymbol(ExecutorHandle handle,
 int MXExecutorSetMonitorCallback(ExecutorHandle handle,
                                            ExecutorMonitorCallback callback,
                                            void* callback_handle);
+
+#endif
 
 //--------------------------------------------
 // Part 5: IO Interface

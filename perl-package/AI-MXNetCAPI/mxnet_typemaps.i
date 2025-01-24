@@ -168,6 +168,26 @@
     }
 }
 
+%typemap(argout) (const int **out_stypes2)
+{
+    if(av_len((AV*)SvRV(ST(3))) == -1 && !result)
+    {
+        AV *myav;
+        SV **svs;
+        int i = 0;
+        svs = (SV **)safemalloc(*arg6*sizeof(SV *));
+        for (i = 0; i < *arg6 ; i++) {
+            svs[i] = newSViv((*$1)[i]);
+            sv_2mortal(svs[i]);
+        }
+        myav = av_make(*arg6, svs);
+        Safefree(svs);
+        $result = newRV_noinc((SV*)myav);
+        sv_2mortal($result);
+        argvi++;
+    }
+}
+
 %typemap(in,numinputs=0) (nn_uint *out_size, const char ***out_array) (nn_uint temp_size, char** temp),
                          (mx_uint *out_size, const char ***out_array) (mx_uint temp_size, char** temp),
                          (uint32_t *out_size, const char ***out_array) (uint32_t temp_size, char** temp)
