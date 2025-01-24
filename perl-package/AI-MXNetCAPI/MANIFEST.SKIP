@@ -1,8 +1,11 @@
-blib/
-.gitignore
-pm_to_blib
-Makefile
 \.bak
-\.cxx
-\.o
+blib/
 \.bs
+\.bso
+\.cxx
+.gitignore
+Makefile
+^MYMETA\.
+\.o
+\.old
+pm_to_blib

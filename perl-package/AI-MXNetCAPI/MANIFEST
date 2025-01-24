@@ -6,7 +6,5 @@ META.json
 META.yml
 mxnet.i
 mxnet_typemaps.i
-MYMETA.json
-MYMETA.yml
 README
 t/AI-MXNetCAPI.t

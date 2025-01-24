@@ -19,7 +19,7 @@ package AI::MXNetCAPI;
 use strict;
 use base qw(DynaLoader);
 bootstrap AI::MXNetCAPI;
-our $VERSION = '1.5';
+our $VERSION = '1.6';
 1;
 __END__
 
