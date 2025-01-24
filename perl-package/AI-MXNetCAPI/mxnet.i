@@ -182,9 +182,10 @@ XS(py_zip) {
     SWIG_TypeClientData(SWIGTYPE_p_MXFunction, (void *)"FunctionHandle");
     SWIG_TypeClientData(SWIGTYPE_p_MXAtomicSymbolCreator, (void *)"AtomicSymbolCreator");
     SWIG_TypeClientData(SWIGTYPE_p_MXSymbol, (void *)"SymbolHandle");
-#ifdef C_API_EXECUTOR
+/* MXNet 1.9.1 supported Executor. we do not support it anymore*/
+#ifdef C_API_EXECUTOR_191
     SWIG_TypeClientData(SWIGTYPE_p_MXExecutor, (void *)"ExecutorHandle");
-#endif
+#endif // C_API_EXECUTOR_191
     SWIG_TypeClientData(SWIGTYPE_p_MXDataIterCreator, (void *)"DataIterCreator");
     SWIG_TypeClientData(SWIGTYPE_p_MXDataIter, (void *)"DataIterHandle");
     SWIG_TypeClientData(SWIGTYPE_p_MXKVStore, (void *)"KVStoreHandle");
@@ -1615,7 +1616,8 @@ int MXOptimizeForBackend(SymbolHandle sym_handle,
 //--------------------------------------------
 // Part 4: Executor interface
 //--------------------------------------------
-#ifdef C_API_EXECUTOR
+// MXNet 1.9.1 supported Executor. we do not support it anymore
+#ifdef C_API_EXECUTOR_191
 /*!
  * \brief Delete the executor
  * \param handle the executor.
@@ -1899,7 +1901,7 @@ int MXExecutorSetMonitorCallback(ExecutorHandle handle,
                                            ExecutorMonitorCallback callback,
                                            void* callback_handle);
 
-#endif
+#endif // C_API_EXECUTOR_191
 
 //--------------------------------------------
 // Part 5: IO Interface
