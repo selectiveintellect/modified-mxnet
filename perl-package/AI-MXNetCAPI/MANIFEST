@@ -1,5 +1,6 @@
 Changes
 lib/AI/MXNetCAPI.pm
+Makefile.PL
 MANIFEST
 MANIFEST.SKIP
 META.json

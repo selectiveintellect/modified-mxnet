@@ -1,0 +1,9 @@
+MYMETA.*
+pm_to_blib
+blib
+Makefile
+*.bs
+*.bak
+*.cxx
+*.bak
+*.o
