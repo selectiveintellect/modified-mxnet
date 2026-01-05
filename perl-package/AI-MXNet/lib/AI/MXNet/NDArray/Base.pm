@@ -159,7 +159,7 @@ func _make_ndarray_function($handle, $func_name)
             $kwargs{ $key } = "(" .join(", ", map { defined($_) ? $_ : 'None' } @{ $kwargs{ $key } }) .")"
                 if ref $kwargs{ $key } eq 'ARRAY';
         }
-        my ($out, $stypes) = check_call(AI::MXNetCAPI::ImperativeInvokeEx(
+        my ($out, $stypes) = check_call(AI::MXNetCAPI::ImperativeInvoke(
                     $handle,
                     scalar(@ndargs),
                     \@ndargs,

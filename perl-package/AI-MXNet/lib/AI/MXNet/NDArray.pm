@@ -558,11 +558,11 @@ method shape()
 {
     if(AI::MXNet::RunTime->Features()->is_enabled('INT64_TENSOR_SIZE'))
     {
-        return [map { $_ + 0 } @{ scalar(check_call(AI::MXNetCAPI::NDArrayGetShapeEx64($self->handle))) }];
+        return [map { $_ + 0 } @{ scalar(check_call(AI::MXNetCAPI::NDArrayGetShape64($self->handle))) }];
     }
     else
     {
-       return scalar(check_call(AI::MXNetCAPI::NDArrayGetShapeEx($self->handle)));
+       return scalar(check_call(AI::MXNetCAPI::NDArrayGetShape($self->handle)));
     }
 }
 
@@ -1479,8 +1479,8 @@ sub _new_empty_handle
 func _new_alloc_handle($shape, $ctx, $delay_alloc, $dtype)
 {
     my $sub = AI::MXNet::RunTime->Features()->is_enabled('INT64_TENSOR_SIZE')
-              ? \&AI::MXNetCAPI::NDArrayCreateEx64
-              : \&AI::MXNetCAPI::NDArrayCreateEx;
+              ? \&AI::MXNetCAPI::NDArrayCreate64
+              : \&AI::MXNetCAPI::NDArrayCreate;
     my $hdl = check_call(
         $sub->(
             $shape,
@@ -1497,7 +1497,7 @@ func _new_alloc_handle($shape, $ctx, $delay_alloc, $dtype)
 method _new_from_shared_mem($shared_pid, $shared_id, $shape, $dtype)
 {
     my $hdl = check_call(
-        AI::MXNetCAPI::NDArrayCreateFromSharedMemEx(
+        AI::MXNetCAPI::NDArrayCreateFromSharedMem(
             $shared_pid,
             $shared_id,
             $shape,

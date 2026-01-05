@@ -667,12 +667,12 @@ method _infer_shape_impl(Maybe[Str|Shape] @args)
     my $is64 = AI::MXNet::RunTime->Features()->is_enabled('INT64_TENSOR_SIZE');
     my $infer_func = $partial
                         ? (
-                            $is64 ? \&AI::MXNetCAPI::SymbolInferShapePartialEx64
-                                  : \&AI::MXNetCAPI::SymbolInferShapePartialEx
+                            $is64 ? \&AI::MXNetCAPI::SymbolInferShapePartial64
+                                  : \&AI::MXNetCAPI::SymbolInferShapePartial
                         )
                         : (
-                            $is64 ? \&AI::MXNetCAPI::SymbolInferShapeEx64
-                                  : \&AI::MXNetCAPI::SymbolInferShapeEx
+                            $is64 ? \&AI::MXNetCAPI::SymbolInferShape64
+                                  : \&AI::MXNetCAPI::SymbolInferShape
                         );
     my ($arg_shapes, $out_shapes, $aux_shapes, $complete) = check_call(
         $infer_func->(
